@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using AccountsPayable.Data;
 using AccountsPayable.Models;
+using Microsoft.Extensions.Primitives;
+using System.Xml.Schema;
 
 namespace AccountsPayable.Controllers
 {
@@ -33,9 +35,25 @@ namespace AccountsPayable.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("/HomeController/Create", Name = "Create")]
-        public String Create()
+        public async Task<IActionResult> Create()
         {
-            return Request.Form.ToString();
+            Microsoft.AspNetCore.Http.IFormCollection form = Request.Form;
+
+            Employee employee = new Employee();
+
+            if (form.TryGetValue("first_name", out StringValues firstName))
+            {
+                employee.employee_first_name = firstName;
+            }
+
+            if (form.TryGetValue("last_name", out StringValues lastName))
+            {
+                employee.employee_last_name = lastName;
+            }
+
+            _context.Add(employee);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Privacy()

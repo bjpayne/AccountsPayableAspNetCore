@@ -38,7 +38,8 @@
             {
                 <option value="@item.department_id">
                     @Html.DisplayFor(modelItem => item.department_name)
-                </option>                
+                </option>
+
             }
         </select>
 
@@ -53,7 +54,7 @@
 
         <p class="text-danger">
             *FOR PROPER AND TIMELY PROCESSING, DO NOT CHANGE FORMAT OF ANY PART OF THIS FORM.  ~THANK YOU~
-        </p>        
+        </p>
 
         <table class="table table-striped table-condensed">
             <thead>
@@ -182,7 +183,7 @@
 
                             No
                         </label>
-                    </td>                    
+                    </td>
                     <td>
                         <button type="button" class="btn btn-sm">+</button>
                     </td>
@@ -190,7 +191,7 @@
                 <tr>
                     <td colspan="5" class="text-right">
                         Total Expenses
-                    </td>                    
+                    </td>
                     <td>
                         <input type="text" class="form-control input-sm" name="other_expenses[][total]">
                     </td>
@@ -207,6 +208,8 @@
             </tbody>
         </table>
 
-        
+        <div class="form-group">
+            <button class="btn btn-primary">submit</button>
+        </div>
     </form>
 </div>
