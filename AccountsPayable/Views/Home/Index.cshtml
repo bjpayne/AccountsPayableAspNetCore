@@ -1,0 +1,212 @@
+﻿@model IEnumerable<AccountsPayable.Models.Department>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="row">
+    <h1>Employee Reimbursement Form</h1>
+
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <label for="employee-id">
+            Employee ID
+        </label>
+        <input type="text" id="employee-id" name="employee_id" class="form-control">
+
+        <label for="first-name">
+            First Name
+        </label>
+        <input type="text" id="first-name" name="first_name" class="form-control" />
+
+        <label for="last-name">
+            Last Name
+        </label>
+        <input type="text" id="last-name" name="last_name" class="form-control" />
+
+
+        <label for="date">
+            Today's Date
+        </label>
+        <input type="text" name="date" id="date" value="@DateTime.Now.ToShortDateString()" class="form-control">
+
+        <label for="department">
+            Department
+        </label>
+        <select name="department" id="department" class="form-control">
+            <option value="" disabled>-- Please Select One --</option>
+            @foreach (var item in Model)
+            {
+                <option value="@item.department_id">
+                    @Html.DisplayFor(modelItem => item.department_name)
+                </option>                
+            }
+        </select>
+
+
+        <p class="text-danger">
+            *EXPENSES WITH ALL DOCUMENTATION & APPROVALS MUST BE RECEIVED BY THE ACCOUNTS PAYABLE OFFICE WITHIN 30 DAYS OF INCURRING EXPENSE.
+        </p>
+
+        <p class="text-danger">
+            *IF RECEIVED AFTER 60 DAYS OF INCURRING EXPENSE, IF APPROVED FOR PAYMENT, REIMBURSEMENT WILL BE TAXED.
+        </p>
+
+        <p class="text-danger">
+            *FOR PROPER AND TIMELY PROCESSING, DO NOT CHANGE FORMAT OF ANY PART OF THIS FORM.  ~THANK YOU~
+        </p>        
+
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th colspan="2">Mileage Reimbursement:</th>
+                    <th colspan="6">&nbsp;</th>
+                    <th class="bg-success">AP USE ONLY</th>
+                </tr>
+                <tr>
+                    <th>Date (m/d/yy)</th>
+                    <th>Destination (from-to-return)</th>
+                    <th>Miles</th>
+                    <th>Purpose of Travel</th>
+                    <th>Fund</th>
+                    <th>Org</th>
+                    <th>Account</th>
+                    <th>Amount</th>
+                    <th>Taxable?</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[][date]">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[][destination]">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[][miles]">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[][purpose]">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[][fund]">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[][org]">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[][account]">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[][amount]">
+                    </td>
+                    <td>
+                        <label>
+                            <input type="radio" name="mileage_reimbursements[][tax]" value="1">
+
+                            Yes
+                        </label>
+
+                        <label>
+                            <input type="radio" name="mileage_reimbursements[][tax]" value="0">
+
+                            No
+                        </label>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-sm">+</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="8" class="text-right">
+                        Total Mileage
+                    </td>
+                    <td>
+                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[][total]">
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th colspan="2">Other Expenses</th>
+                    <th colspan="4">&nbsp;</th>
+                    <th class="bg-success">AP USE ONLY</th>
+                </tr>
+                <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Fund</th>
+                    <th>ORG</th>
+                    <th>Account</th>
+                    <th>Amount</th>
+                    <th>Tax</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="text" class="form-control input-sm" name="other_expenses[][date]">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control input-sm" name="other_expenses[][description]">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control input-sm" name="other_expenses[][Fund]">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control input-sm" name="other_expenses[][ORG]">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control input-sm" name="other_expenses[][Account]">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control input-sm" name="other_expenses[][Amount]">
+                    </td>
+                    <td>
+                        <label>
+                            <input type="radio" name="mileage_reimbursements[][tax]" value="1">
+
+                            Yes
+                        </label>
+
+                        <label>
+                            <input type="radio" name="mileage_reimbursements[][tax]" value="0">
+
+                            No
+                        </label>
+                    </td>                    
+                    <td>
+                        <button type="button" class="btn btn-sm">+</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5" class="text-right">
+                        Total Expenses
+                    </td>                    
+                    <td>
+                        <input type="text" class="form-control input-sm" name="other_expenses[][total]">
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">Total Reimbursement</td>
+                    <td>
+                        <input type="text" class="form-control" name="total_amount">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        
+    </form>
+</div>
