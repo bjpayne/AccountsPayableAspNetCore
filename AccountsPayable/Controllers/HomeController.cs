@@ -4,12 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using AccountsPayable.Data;
 using AccountsPayable.Models;
 using Microsoft.Extensions.Primitives;
-using System.Xml.Schema;
 
 namespace AccountsPayable.Controllers
 {
@@ -77,6 +75,8 @@ namespace AccountsPayable.Controllers
 
             await _context.SaveChangesAsync();
 
+            StoreMileage();
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -89,6 +89,20 @@ namespace AccountsPayable.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private void StoreMileage()
+        {
+            Microsoft.AspNetCore.Http.IFormCollection request = Request.Form;
+
+            // String[] mileages = Request.Form.TryGetValue("")
+
+            if (request.TryGetValue("mileage_reimbursements_date", out StringValues milageReimburesements))
+            {
+                Mile mileage = new Mile();
+
+                mileage.mile_date = milageReimburesements[0];
+            }            
         }
     }
 }
