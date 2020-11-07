@@ -37,22 +37,46 @@ namespace AccountsPayable.Controllers
         [Route("/HomeController/Create", Name = "Create")]
         public async Task<IActionResult> Create()
         {
-            Microsoft.AspNetCore.Http.IFormCollection form = Request.Form;
+            Microsoft.AspNetCore.Http.IFormCollection request = Request.Form;
 
-            Employee employee = new Employee();
+            Form form = new Form();
 
-            if (form.TryGetValue("first_name", out StringValues firstName))
+            if (request.TryGetValue("employee_id", out StringValues employeeId))
             {
-                employee.employee_first_name = firstName;
+                form.employee_id = employeeId;
             }
 
-            if (form.TryGetValue("last_name", out StringValues lastName))
+            if (request.TryGetValue("first_name", out StringValues employeeFirstName))
             {
-                employee.employee_last_name = lastName;
+                form.employee_first_name = employeeFirstName;
             }
 
-            _context.Add(employee);
+            if (request.TryGetValue("last_name", out StringValues employeeLastName))
+            {
+                form.employee_last_name = employeeLastName;
+            }
+
+            if (request.TryGetValue("date", out StringValues formDate))
+            {
+                form.form_date = formDate;
+            }
+
+            if (request.TryGetValue("department", out StringValues departmentId))
+            {
+                form.department_id = Int32.Parse(departmentId);
+            }
+
+            if (request.TryGetValue("home_campus", out StringValues formCampus))
+            {
+                form.form_campus = formCampus;
+            }
+
+            form.form_status = "Pending Approval";
+
+            _context.Add(form);
+
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 

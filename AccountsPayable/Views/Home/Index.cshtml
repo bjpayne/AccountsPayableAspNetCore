@@ -8,41 +8,58 @@
     <h1>Employee Reimbursement Form</h1>
 
     <form asp-action="Create" method="post" enctype="multipart/form-data">
-        <label for="employee-id">
-            Employee ID
-        </label>
-        <input type="text" id="employee-id" name="employee_id" class="form-control">
+        <div class="form-group">
+            <label for="employee-id">
+                Employee ID
+            </label>
+            <input type="text" id="employee-id" name="employee_id" class="form-control">
+        </div>
 
-        <label for="first-name">
-            First Name
-        </label>
-        <input type="text" id="first-name" name="first_name" class="form-control" />
+        <div class="form-group">
+            <label for="first-name">
+                First Name
+            </label>
+            <input type="text" id="first-name" name="first_name" class="form-control" />
 
-        <label for="last-name">
-            Last Name
-        </label>
-        <input type="text" id="last-name" name="last_name" class="form-control" />
+        </div>
 
+        <div class="form-group">
+            <label for="last-name">
+                Last Name
+            </label>
+            <input type="text" id="last-name" name="last_name" class="form-control" />
+        </div>
 
-        <label for="date">
-            Today's Date
-        </label>
-        <input type="text" name="date" id="date" value="@DateTime.Now.ToShortDateString()" class="form-control">
+        <div class="form-group">
+            <label for="date">
+                Today's Date (Y-m-d)
+            </label>
+            <input type="text" name="date" id="date" value="@DateTime.Now.ToString("yyyy-MM-dd")"
+                   class="form-control" data-mask="0000-00-00" placeholder="____-__-__">
+        </div>
 
-        <label for="department">
-            Department
-        </label>
-        <select name="department" id="department" class="form-control">
-            <option value="" disabled>-- Please Select One --</option>
-            @foreach (var item in Model)
-            {
-                <option value="@item.department_id">
-                    @Html.DisplayFor(modelItem => item.department_name)
-                </option>
+        <div class="form-group">
+            <label for="department">
+                Department
+            </label>
 
-            }
-        </select>
+            <select name="department" id="department" class="form-control">
+                <option value="" disabled>-- Please Select One --</option>
+                @foreach (var item in Model)
+                {
+                    <option value="@item.department_id">
+                        @Html.DisplayFor(modelItem => item.department_name)
+                    </option>
 
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="campus">Home Campus</label>
+
+            <input type="text" class="form-control" name="home_campus">
+        </div>
 
         <p class="text-danger">
             *EXPENSES WITH ALL DOCUMENTATION & APPROVALS MUST BE RECEIVED BY THE ACCOUNTS PAYABLE OFFICE WITHIN 30 DAYS OF INCURRING EXPENSE.

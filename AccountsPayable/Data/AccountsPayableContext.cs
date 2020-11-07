@@ -12,6 +12,6 @@ namespace AccountsPayable.Data
 
         public DbSet<Department> Department { get; set; }
 
-        public DbSet<Employee> Form { get; set; }
+        public DbSet<Form> Form { get; set; }
     }
 }
