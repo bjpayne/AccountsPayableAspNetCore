@@ -20,7 +20,7 @@ namespace AccountsPayable.Models
         public String mile_tax { get; set; }
 
         [ForeignKey("form_id")]
-        public String form_id { get; set; }
+        public Int32 form_id { get; set; }
 
 
     }

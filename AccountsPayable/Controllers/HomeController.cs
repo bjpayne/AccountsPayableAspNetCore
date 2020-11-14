@@ -73,9 +73,9 @@ namespace AccountsPayable.Controllers
 
             _context.Add(form);
 
-            await _context.SaveChangesAsync();
+            StoreMileage(form.form_id);
 
-            StoreMileage();
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
@@ -91,18 +91,37 @@ namespace AccountsPayable.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        private void StoreMileage()
+        private void StoreMileage(Int32 formID)
         {
             Microsoft.AspNetCore.Http.IFormCollection request = Request.Form;
 
-            // String[] mileages = Request.Form.TryGetValue("")
+            Int32 i = 0;
 
-            if (request.TryGetValue("mileage_reimbursements_date", out StringValues milageReimburesements))
+            foreach (String key in request.Keys)
             {
-                Mile mileage = new Mile();
+                if (key.IndexOf($"mileage_reimbursements[{i}]") != -1)
+                {
+                    Mile mileage = new Mile();
 
-                mileage.mile_date = milageReimburesements[0];
-            }            
+                    mileage.form_id = formID;
+
+                    if (request.TryGetValue($"mileage_reimbursements[{i}][date]", out StringValues mileageReimbursementDate))
+                    {
+
+                        mileage.mile_date = mileageReimbursementDate;
+                    }
+
+                    if (request.TryGetValue($"mileage_reimbursements[{i}][destination]", out StringValues mileageReimbursementDestination))
+                    {
+
+                        mileage.mile_description = mileageReimbursementDestination;
+                    }
+
+                    i++;
+
+                    _context.Add(mileage);
+                }
+            }
         }
     }
 }
