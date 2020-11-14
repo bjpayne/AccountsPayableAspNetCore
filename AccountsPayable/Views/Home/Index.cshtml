@@ -47,9 +47,9 @@
                 <option value="" disabled>-- Please Select One --</option>
                 @foreach (var item in Model)
                 {
-                    <option value="@item.department_id">
-                        @Html.DisplayFor(modelItem => item.department_name)
-                    </option>
+                <option value="@item.department_id">
+                    @Html.DisplayFor(modelItem => item.department_name)
+                </option>
 
                 }
             </select>
@@ -78,7 +78,6 @@
                 <tr>
                     <th colspan="2">Mileage Reimbursement:</th>
                     <th colspan="6">&nbsp;</th>
-                    <th class="bg-success">AP USE ONLY</th>
                     <th>&nbsp;</th>
                 </tr>
                 <tr>
@@ -90,7 +89,6 @@
                     <th>Org</th>
                     <th>Account</th>
                     <th>Amount</th>
-                    <th>Taxable?</th>
                     <th>&nbsp;</th>
                 </tr>
             </thead>
@@ -98,8 +96,7 @@
                 <tr>
                     <td>
                         <input type="text" class="form-control input-sm" name="mileage_reimbursements[0][date]"
-                               placeholder="___-__-__" data-mask="0000-00-00"
-                        >
+                               placeholder="___-__-__" data-mask="0000-00-00">
                     </td>
                     <td>
                         <input type="text" class="form-control input-sm" name="mileage_reimbursements[0][destination]">
@@ -123,75 +120,14 @@
                         <input type="text" class="form-control input-sm" name="mileage_reimbursements[0][amount]">
                     </td>
                     <td>
-                        <label>
-                            <input type="radio" name="mileage_reimbursements[0][taxable]" value="1">
-
-                            Yes
-                        </label>
-
-                        <label>
-                            <input type="radio" name="mileage_reimbursements[0][taxable]" value="0">
-
-                            No
-                        </label>
-                    </td>
-                    <td>
                         <button type="button" class="btn btn-sm">+</button>
                     </td>
                 </tr>
 
                 <tr>
+                    <td colspan="7" class="text-right">Total Mileage:</td>
                     <td>
-                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[1][date]"
-                               placeholder="___-__-__" data-mask="0000-00-00"
-                        >
-                    </td>
-                    <td>
-                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[1][destination]">
-                    </td>
-                    <td>
-                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[1][miles]">
-                    </td>
-                    <td>
-                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[1][purpose]">
-                    </td>
-                    <td>
-                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[1][fund]">
-                    </td>
-                    <td>
-                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[1][organization]">
-                    </td>
-                    <td>
-                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[1][account]">
-                    </td>
-                    <td>
-                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[1][amount]">
-                    </td>
-                    <td>
-                        <label>
-                            <input type="radio" name="mileage_reimbursements[1][taxable]" value="1">
-
-                            Yes
-                        </label>
-
-                        <label>
-                            <input type="radio" name="mileage_reimbursements[1][taxable]" value="0">
-
-                            No
-                        </label>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-sm">+</button>
-                    </td>
-                </tr>
-
-
-                <tr>
-                    <td colspan="7" class="text-right">
-                        Total Mileage
-                    </td>
-                    <td>
-                        <input type="text" class="form-control input-sm" name="mileage_reimbursements_total">
+                        <p class="form-control-static text-right" id="total-mileage">$0.00</p>
                     </td>
                     <td colspan="2">
                         &nbsp;
@@ -205,7 +141,6 @@
                 <tr>
                     <th colspan="2">Other Expenses:</th>
                     <th colspan="4">&nbsp;</th>
-                    <th class="bg-success">AP USE ONLY</th>
                     <th>&nbsp;</th>
                 </tr>
                 <tr>
@@ -215,63 +150,49 @@
                     <th>ORG</th>
                     <th>Account</th>
                     <th>Amount</th>
-                    <th>Tax</th>
                     <th>&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>
-                        <input type="text" class="form-control input-sm" name="other_expenses[0][date]"
-                               data-mask="0000-00-00" placeholder="___-__-__">
+                        <input type="text" class="form-control input-sm" name="other_expenses[0][exp_date]"
+                               data-mask="0000-00-00" placeholder="___-__-__"
+                        >
                     </td>
                     <td>
-                        <input type="text" class="form-control input-sm" name="other_expenses[0][description]">
+                        <input type="text" class="form-control input-sm" name="other_expenses[0][exp_description]">
                     </td>
                     <td>
-                        <input type="text" class="form-control input-sm" name="other_expenses[0][Fund]">
+                        <input type="text" class="form-control input-sm" name="other_expenses[0][exp_fund]">
                     </td>
                     <td>
-                        <input type="text" class="form-control input-sm" name="other_expenses[0][ORG]">
+                        <input type="text" class="form-control input-sm" name="other_expenses[0][exp_org]">
                     </td>
                     <td>
-                        <input type="text" class="form-control input-sm" name="other_expenses[0][Account]">
+                        <input type="text" class="form-control input-sm" name="other_expenses[0][exp_account]">
                     </td>
                     <td>
-                        <input type="text" class="form-control input-sm" name="other_expenses[0][Amount]">
-                    </td>
-                    <td>
-                        <label>
-                            <input type="radio" name="other_expenses[0][tax]" value="1">
-
-                            Yes
-                        </label>
-
-                        <label>
-                            <input type="radio" name="other_expenses[0][tax]" value="0">
-
-                            No
-                        </label>
+                        <input type="text" class="form-control input-sm" name="other_expenses[0][exp_amount]">
                     </td>
                     <td>
                         <button type="button" class="btn btn-sm">+</button>
                     </td>
+                
                 </tr>
                 <tr>
-                    <td colspan="5" class="text-right">
-                        Total Expenses
-                    </td>
+                    <td colspan="5" class="text-right">Total Expenses:</td>
                     <td>
-                        <input type="text" class="form-control input-sm" name="other_expenses_total">
+                        <p class="form-control-static text-right" id="total-expenses">$0.00</p>
                     </td>
                     <td colspan="2">
                         &nbsp;
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="5">Total Reimbursement</td>
+                    <td colspan="5">Total Reimbursement:</td>
                     <td>
-                        <input type="text" class="form-control" name="total_reimbursement_amount">
+                        <p class="form-control-static text-right" id="total-reimbursement">$0.00</p>
                     </td>
                     <td colspan="2"></td>
                 </tr>
@@ -281,5 +202,13 @@
         <div class="form-group">
             <button class="btn btn-primary">submit</button>
         </div>
+    </form>
+
+    <form asp-controller="Home" asp-action="UploadFile" method="post"
+          enctype="multipart/form-data"
+    >
+
+        <input type="file" name="file" />
+        <button type="submit">Upload File</button>
     </form>
 </div>

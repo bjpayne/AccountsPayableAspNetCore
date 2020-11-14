@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AccountsPayable.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace AccountsPayable
 {
@@ -30,6 +32,10 @@ namespace AccountsPayable
             services.AddDbContext<AccountsPayableContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AccountsPayableContext")));
 
             services.AddControllersWithViews(x => x.SuppressAsyncSuffixInActionNames = false).AddRazorRuntimeCompilation();
+
+            services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
+
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,5 +65,6 @@ namespace AccountsPayable
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
+    
     }
 }

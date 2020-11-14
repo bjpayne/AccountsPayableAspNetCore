@@ -18,6 +18,7 @@ namespace AccountsPayable.Models
         public String mile_account { get; set; }
         public String mile_amount { get; set; }
         public String mile_tax { get; set; }
+        public String mile_purpose { get; set; }
 
         [ForeignKey("form_id")]
         public Int32 form_id { get; set; }
