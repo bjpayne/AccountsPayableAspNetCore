@@ -20,8 +20,8 @@ namespace AccountsPayable.Models
 
         [ForeignKey("form_id")]
         public int form_id { get; set; }
-      //  [ForeignKey("receipt_id")]
-      //   public int receipt_id { get; set; }
+        [ForeignKey("receipt_id")]
+        public int receipt_id { get; set; }
 
     }
 }

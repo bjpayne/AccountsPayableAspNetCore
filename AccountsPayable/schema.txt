@@ -1,69 +1,67 @@
-CREATE TABLE employee (
-	employee_id varchar(25) PRIMARY KEY NOT NULL,
-	employee_fistname varchar(max) NOT NULL,
-	employee_lastname	varchar(max) NOT NULL,
+CREATE TABLE [dbo].[approval_list] (
+    [app_id]          INT           IDENTITY (1, 1) NOT NULL,
+    [app_fund]        INT           NOT NULL,
+    [app_org]         INT           NOT NULL,
+    [app_fund_org]    INT           NULL,
+    [app_dept]        CHAR (1)      NULL,
+    [app_budget_mang] VARCHAR (MAX) NOT NULL,
+    [app_lead]        CHAR (1)      NULL,
+    [app_add_app]     VARCHAR (MAX) NULL,
+    [app_add_app2]    VARCHAR (MAX) NULL,
+    [app_add_app3]    VARCHAR (MAX) NULL,
+    [app_finac_mang]  VARCHAR (MAX) NULL
 );
 
-CREATE TABLE department (
-	department_id int PRIMARY KEY NOT NULL,
-	department_name varchar(max) NOT NULL
+CREATE TABLE [dbo].[department] (
+    [department_id]   INT           NOT NULL,
+    [department_name] VARCHAR (MAX) NOT NULL
 );
 
-CREATE TABLE form(
-	form_id	int IDENTITY(1,1) PRIMARY KEY,
-	form_date	datetime NOT NULL,
-	form_campus	varchar(max) NOT NULL,
-	form_status varchar(max) NOT NULL,
-	employee_id	varchar(25),
-	employee_first_name varchar(max) NOT NULL,
-	employee_last_name varchar(max) NOT NULL,
-	department_id int,
-	FOREIGN KEY(employee_id) REFERENCES "employee" ON UPDATE CASCADE,
-	FOREIGN KEY(department_id) REFERENCES "department" ON UPDATE CASCADE
+CREATE TABLE [dbo].[expenses] (
+    [id]              INT           IDENTITY (1, 1) NOT NULL,
+    [form_id]         INT           NULL,
+    [exp_date]        DATE          NOT NULL,
+    [exp_description] VARCHAR (MAX) NOT NULL,
+    [exp_fund]        VARCHAR (MAX) NOT NULL,
+    [exp_org]         VARCHAR (MAX) NOT NULL,
+    [exp_account]     VARCHAR (MAX) NOT NULL,
+    [exp_amount]      VARCHAR (MAX) NOT NULL,
+    [exp_tax]         VARCHAR (MAX) NULL,
+    [receipt_id]      INT           NULL
 );
 
-CREATE TABLE mile (
-	form_id	INTEGER,
-	mile_date	date NOT NULL,
-	mile_description	varchar(max) NOT NULL,
-	mile_fund	varchar(max) NOT NULL,
-	mile_org	varchar(max) NOT NULL,
-	mile_account	varchar(max) NOT NULL,
-	mile_amount	varchar(max) NOT NULL,
-	mile_tax	varchar(max) NOT NULL,
-	FOREIGN KEY("form_id") REFERENCES "form" ON UPDATE CASCADE
+CREATE TABLE [dbo].[form] (
+    [form_id]             INT           IDENTITY (1, 1) NOT NULL,
+    [form_date]           DATE          NOT NULL,
+    [form_campus]         VARCHAR (MAX) NOT NULL,
+    [form_status]         VARCHAR (MAX) NOT NULL,
+    [employee_id]         VARCHAR (25)  NULL,
+    [employee_first_name] VARCHAR (MAX) NOT NULL,
+    [employee_last_name]  VARCHAR (MAX) NOT NULL,
+    [department_id]       INT           NULL
 );
 
-CREATE TABLE receipt (
-	receipt_id	int IDENTITY(1,1) PRIMARY KEY,
-	receipt_receipt	varchar(max) NOT NULL,
-);
-CREATE TABLE expenses (
-	form_id	int,
-	exp_date	date NOT NULL,
-	exp_description	varchar(max) NOT NULL,
-	exp_fund	varchar(max) NOT NULL,
-	exp_org	varchar(max) NOT NULL,
-	exp_account	varchar(max) NOT NULL,
-	exp_amount	varchar(max) NOT NULL,
-	exp_tax	varchar(max) NOT NULL,
-	receipt_id	int,
-	FOREIGN KEY("form_id") REFERENCES "form" ON UPDATE CASCADE,
-	FOREIGN KEY("receipt_id") REFERENCES "receipt" ON UPDATE CASCADE
+
+CREATE TABLE [dbo].[mile] (
+    [id]               INT             IDENTITY (1, 1) NOT NULL,
+    [form_id]          INT             NULL,
+    [mile_date]        DATE            NOT NULL,
+    [mile_miles]       DECIMAL (11, 2) NOT NULL,
+    [mile_description] VARCHAR (MAX)   NOT NULL,
+    [mile_fund]        VARCHAR (MAX)   NOT NULL,
+    [mile_org]         VARCHAR (MAX)   NOT NULL,
+    [mile_account]     VARCHAR (MAX)   NOT NULL,
+    [mile_amount]      VARCHAR (MAX)   NOT NULL,
+    [mile_tax]         VARCHAR (MAX)   NULL,
+    [mile_purpose]     VARCHAR (MAX)   NOT NULL
 );
 
-CREATE TABLE approval_list (
-	app_fund	int NOT NUll,
-	app_org	int NOT NULL,
-	app_fund_org	int UNIQUE,
-	app_dept	char UNIQUE,
-	app_budget_mang varchar(max) NOT NULL,
-	app_lead	char UNIQUE,
-	app_add_app	varchar(max),
-	app_add_app2	varchar(max),
-	app_add_app3	varchar(max),
-	app_finac_mang	varchar(max)
+
+CREATE TABLE [dbo].[receipt] (
+    [receipt_id]      INT             IDENTITY (1, 1) NOT NULL,
+    [receipt_receipt] VARBINARY (MAX) NOT NULL
 );
+
 
 INSERT INTO department (department_id, department_name) VALUES
 (101, 'General Adminstration'),

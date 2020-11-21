@@ -1,33 +1,30 @@
-﻿@model IEnumerable<AccountsPayable.Models.Department>
-
-@{
-    ViewData["Title"] = "Home Page";
+﻿@{ 
+    ViewData["Title"] = "Expense Form";
 }
 
 <div class="row">
     <h1>Employee Reimbursement Form</h1>
 
-    <form asp-action="Create" method="post" enctype="multipart/form-data">
+    <form asp-action="Create" method="post" enctype="multipart/form-data" id="expense-form">
         <div class="form-group">
             <label for="employee-id">
                 Employee ID
             </label>
-            <input type="text" id="employee-id" name="employee_id" class="form-control">
+            <input type="text" id="employee-id" name="employee_id" class="form-control" required minlength=5>
         </div>
 
         <div class="form-group">
             <label for="first-name">
                 First Name
             </label>
-            <input type="text" id="first-name" name="first_name" class="form-control" />
-
+            <input type="text" id="first-name" name="first_name" class="form-control" required>
         </div>
 
         <div class="form-group">
             <label for="last-name">
                 Last Name
             </label>
-            <input type="text" id="last-name" name="last_name" class="form-control" />
+            <input type="text" id="last-name" name="last_name" class="form-control" required>
         </div>
 
         <div class="form-group">
@@ -35,7 +32,8 @@
                 Today's Date (Y-m-d)
             </label>
             <input type="text" name="date" id="date" value="@DateTime.Now.ToString("yyyy-MM-dd")"
-                   class="form-control" data-mask="0000-00-00" placeholder="____-__-__">
+                   class="form-control" data-mask="0000-00-00" placeholder="____-__-__" required
+                   minlength="10">
         </div>
 
         <div class="form-group">
@@ -43,14 +41,13 @@
                 Department
             </label>
 
-            <select name="department" id="department" class="form-control">
+            <select name="department" id="department" class="form-control" required>
                 <option value="" disabled>-- Please Select One --</option>
-                @foreach (var item in Model)
+                @foreach (var department in ViewData["Departments"] as IList<Department>)
                 {
-                <option value="@item.department_id">
-                    @Html.DisplayFor(modelItem => item.department_name)
-                </option>
-
+                    <option value="@department.department_id">
+                        @department.department_name
+                    </option>
                 }
             </select>
         </div>
@@ -58,7 +55,7 @@
         <div class="form-group">
             <label for="campus">Home Campus</label>
 
-            <input type="text" class="form-control" name="home_campus">
+            <input type="text" class="form-control" name="home_campus" required>
         </div>
 
         <p class="text-danger">
@@ -96,28 +93,28 @@
                 <tr>
                     <td>
                         <input type="text" class="form-control input-sm" name="mileage_reimbursements[0][date]"
-                               placeholder="___-__-__" data-mask="0000-00-00">
+                               placeholder="___-__-__" data-mask="0000-00-00" required>
                     </td>
                     <td>
-                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[0][destination]">
+                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[0][destination]" required>
                     </td>
                     <td>
-                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[0][miles]">
+                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[0][miles]" required>
                     </td>
                     <td>
-                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[0][purpose]">
+                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[0][purpose]" required>
                     </td>
                     <td>
-                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[0][fund]">
+                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[0][fund]" required minlength=3 maxlength=3>
                     </td>
                     <td>
-                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[0][organization]">
+                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[0][organization]" required minlength=3 maxlength=3>
                     </td>
                     <td>
-                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[0][account]">
+                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[0][account]" required minlength=5 maxlength=5>
                     </td>
                     <td>
-                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[0][amount]">
+                        <input type="text" class="form-control input-sm" name="mileage_reimbursements[0][amount]" required>
                     </td>
                     <td>
                         <button type="button" class="btn btn-sm">+</button>
@@ -157,20 +154,19 @@
                 <tr>
                     <td>
                         <input type="text" class="form-control input-sm" name="other_expenses[0][exp_date]"
-                               data-mask="0000-00-00" placeholder="___-__-__"
-                        >
+                               data-mask="0000-00-00" placeholder="___-__-__">
                     </td>
                     <td>
                         <input type="text" class="form-control input-sm" name="other_expenses[0][exp_description]">
                     </td>
                     <td>
-                        <input type="text" class="form-control input-sm" name="other_expenses[0][exp_fund]">
+                        <input type="text" class="form-control input-sm" name="other_expenses[0][exp_fund]" minlength=3 maxlength=3>
                     </td>
                     <td>
-                        <input type="text" class="form-control input-sm" name="other_expenses[0][exp_org]">
+                        <input type="text" class="form-control input-sm" name="other_expenses[0][exp_org]" minlength=3 maxlength=3>
                     </td>
                     <td>
-                        <input type="text" class="form-control input-sm" name="other_expenses[0][exp_account]">
+                        <input type="text" class="form-control input-sm" name="other_expenses[0][exp_account]" minlength=5 maxlength=5>
                     </td>
                     <td>
                         <input type="text" class="form-control input-sm" name="other_expenses[0][exp_amount]">
@@ -178,7 +174,7 @@
                     <td>
                         <button type="button" class="btn btn-sm">+</button>
                     </td>
-                
+
                 </tr>
                 <tr>
                     <td colspan="5" class="text-right">Total Expenses:</td>
@@ -200,15 +196,13 @@
         </table>
 
         <div class="form-group">
-            <button class="btn btn-primary">submit</button>
+            <label>Reimbursement Receipts</label>
+
+            <input type="file" name="files" class="form-control-file">
         </div>
-    </form>
 
-    <form asp-controller="Home" asp-action="UploadFile" method="post"
-          enctype="multipart/form-data"
-    >
-
-        <input type="file" name="file" />
-        <button type="submit">Upload File</button>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">submit</button>
+        </div>
     </form>
 </div>

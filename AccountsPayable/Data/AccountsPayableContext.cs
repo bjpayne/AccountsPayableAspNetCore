@@ -15,6 +15,9 @@ namespace AccountsPayable.Data
         public DbSet<Form> Form { get; set; }
 
         public DbSet<Mile> Mile { get; set; }
+
         public DbSet<Expenses> Expenses { get; set; }
+
+        public DbSet<Receipt> Receipt { get; set; }
     }
 }

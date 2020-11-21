@@ -9,16 +9,23 @@ using AccountsPayable.Data;
 using AccountsPayable.Models;
 using Microsoft.Extensions.Primitives;
 using System.IO;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System.Text;
 
 namespace AccountsPayable.Controllers
 {
     public class HomeController : Controller
     {
         private readonly AccountsPayableContext _context;
+        private IHostingEnvironment _env;
+        private string _dir;
 
-        public HomeController(AccountsPayableContext context)
+        public HomeController(AccountsPayableContext context, IHostingEnvironment env)
         {
             _context = context;
+            _env = env;
+            _dir = _env.ContentRootPath;
         }
 
         public async Task<IActionResult> Index()
@@ -27,7 +34,9 @@ namespace AccountsPayable.Controllers
 
             departments = departments.OrderBy(x => x.department_name).ToList();
 
-            return View(departments);
+            ViewData["Departments"] = departments;
+
+            return View();
         }
 
         // POST: /Create      
@@ -78,7 +87,9 @@ namespace AccountsPayable.Controllers
 
             StoreMileage(form.form_id);
 
-            StoreExpenses(form.form_id);
+            Int32 receiptId = StoreReceipt(request.Files);
+
+            StoreExpenses(form.form_id, receiptId);
 
             _context.SaveChanges();
 
@@ -173,7 +184,7 @@ namespace AccountsPayable.Controllers
             }
         }
 
-        private void StoreExpenses(Int32 formID)
+        private void StoreExpenses(Int32 formID, Int32 receiptId)
         {
             Microsoft.AspNetCore.Http.IFormCollection request = Request.Form;
 
@@ -217,42 +228,72 @@ namespace AccountsPayable.Controllers
                         expenses.exp_amount = otherExpensesAmount;
                     }
 
-                    i++;
+                    if (receiptId > 0)
+                    {
+                        expenses.receipt_id = receiptId;
 
-                    _context.Add(expenses);
+                        _context.Add(expenses);
+                    } else
+                    {
+                        // Validation for missing receipt
+                    }
+
+                    i++;
                 }
             }
         }
 
-        public interface IFormFile
+        public Int32 StoreReceipt(IEnumerable<IFormFile> files)
         {
-            int Length { get; }
-
-            string GetFilename();
-
-            Task CopyToAsync(FileStream stream);
-
-        }
-
-        public async Task<IActionResult> UploadFile(IFormFile file)
-        {
-            if (file == null || file.Length == 0)
-                return (IActionResult)Content("file not selected!");
-
-            var path = Path.Combine(
-                        Directory.GetCurrentDirectory(), "wwwroot",
-                        file.GetFilename());
-
-
-
-            using (var stream = new FileStream(path, FileMode.Create))
+            foreach (var formFile in files)
             {
-                await file.CopyToAsync(stream);
+                if (formFile.Length > 0)
+                {
+                    var filePath = Path.GetTempFileName();
+
+                    using (var stream = new MemoryStream())
+                    {
+                        formFile.CopyToAsync(stream);
+
+                        Receipt receipt = new Receipt();
+
+                        receipt.receipt_receipt = stream.ToArray();
+
+                        _context.Add(receipt);
+
+                        _context.SaveChanges();
+
+                        return receipt.receipt_id;
+                    }
+                }
             }
 
-            return (IActionResult)RedirectToAction("Files");
+            return 0;
         }
+        /*
+         // Create a new PDF document
+            PdfDocument document = new PdfDocument();
+            document.Info.Title = "Created with PDFsharp";
 
+            // Create an empty page
+            PdfPage page = document.AddPage();
 
+            // Get an XGraphics object for drawing
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+
+            // Draw image
+
+            const string imagePath = @"C:\Users\20201107_112630.jpg";
+             XImage xImage = XImage.FromFile(imagePath);
+
+            //FileStream test = new FileStream(path, FileMode.Create);
+            //XImage xImage = XImage.FromStream(test);
+            double height = page.Width / xImage.PixelWidth * xImage.PixelHeight;
+            gfx.DrawImage(xImage, 0, 0, page.Width / 1.1, height / 1.1);
+
+            // Save the document...
+            const string filename = @"C:\PDFDemoTemp\testx.pdf";
+            document.Save(filename);
+         */
     }
 }

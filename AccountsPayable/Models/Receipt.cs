@@ -12,7 +12,7 @@ namespace AccountsPayable.Models
         [Key]
         public int receipt_id { get; set; }
 
-        public String receipt_receipt { get; set; }
+        public Byte[] receipt_receipt { get; set; }
 
     }
 }

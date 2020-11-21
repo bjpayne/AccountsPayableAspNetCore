@@ -19,6 +19,7 @@ namespace AccountsPayable.Models
 
         public String form_status { get; set; }
 
+        [Required]
         public String employee_id { get; set; }
 
         public String employee_first_name { get; set; }
