@@ -12,20 +12,22 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System.Text;
+using System.Windows;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
+using PdfSharp;
+using System.Reflection;
+
 
 namespace AccountsPayable.Controllers
 {
     public class HomeController : Controller
     {
         private readonly AccountsPayableContext _context;
-        private IHostingEnvironment _env;
-        private string _dir;
 
-        public HomeController(AccountsPayableContext context, IHostingEnvironment env)
+        public HomeController(AccountsPayableContext context)
         {
             _context = context;
-            _env = env;
-            _dir = _env.ContentRootPath;
         }
 
         public async Task<IActionResult> Index()
@@ -66,7 +68,7 @@ namespace AccountsPayable.Controllers
 
             if (request.TryGetValue("date", out StringValues formDate))
             {
-                form.form_date = formDate;
+                form.form_date = DateTime.Parse(formDate);
             }
 
             if (request.TryGetValue("department", out StringValues departmentId))
@@ -123,8 +125,12 @@ namespace AccountsPayable.Controllers
 
                     if (request.TryGetValue($"mileage_reimbursements[{i}][date]", out StringValues mileageReimbursementDate))
                     {
+                        DateTime mileageReimbursementDateTime = new DateTime();
 
-                        mileage.mile_date = mileageReimbursementDate;
+                        if (DateTime.TryParse(mileageReimbursementDate, out mileageReimbursementDateTime))
+                        {
+                            mileage.mile_date = DateTime.Parse(mileageReimbursementDate);
+                        }
                     }
 
                     if (request.TryGetValue($"mileage_reimbursements[{i}][destination]", out StringValues mileageReimbursementDestination))
@@ -200,7 +206,12 @@ namespace AccountsPayable.Controllers
 
                     if (request.TryGetValue($"other_expenses[{i}][exp_date]", out StringValues otherExpensesDate))
                     {
-                        expenses.exp_date = otherExpensesDate;
+                        DateTime otherExpensesDateTime = new DateTime();
+
+                        if (DateTime.TryParse(otherExpensesDate, out otherExpensesDateTime))
+                        {
+                            expenses.exp_date = DateTime.Parse(otherExpensesDate);
+                        }
                     }
 
                     if (request.TryGetValue($"other_expenses[{i}][exp_description]", out StringValues otherExpensesDescription))
@@ -233,7 +244,8 @@ namespace AccountsPayable.Controllers
                         expenses.receipt_id = receiptId;
 
                         _context.Add(expenses);
-                    } else
+                    }
+                    else
                     {
                         // Validation for missing receipt
                     }
@@ -249,51 +261,70 @@ namespace AccountsPayable.Controllers
             {
                 if (formFile.Length > 0)
                 {
-                    var filePath = Path.GetTempFileName();
+                    String fileName = formFile.FileName;
 
-                    using (var stream = new MemoryStream())
+                    if (!fileName.Contains(".pdf"))
                     {
-                        formFile.CopyToAsync(stream);
+                        using (MemoryStream pdf = new MemoryStream())
+                        {
+                            formFile.CopyToAsync(pdf);
 
-                        Receipt receipt = new Receipt();
+                            //Create PDF document
+                            PdfDocument document = new PdfDocument();
+                            document.Info.Title = "receipt";
 
-                        receipt.receipt_receipt = stream.ToArray();
+                            // Create an empty page
+                            PdfPage page = document.AddPage();
 
-                        _context.Add(receipt);
+                            // Get an XGraphics object for drawing
+                            XGraphics gfx = XGraphics.FromPdfPage(page);
 
-                        _context.SaveChanges();
+                            // Draw image
+                            XImage xImage = XImage.FromStream(pdf);
 
-                        return receipt.receipt_id;
+                            double height = page.Width / xImage.PixelWidth * xImage.PixelHeight;
+                            gfx.DrawImage(xImage, 0, 0, page.Width / 1.1, height / 1.1);
+
+                            using (MemoryStream stream = new MemoryStream())
+                            {
+                                // Save the document...
+                                document.Save(stream, true);
+
+                                Receipt receipt = new Receipt();
+
+                                receipt.receipt_receipt = stream.ToArray();
+
+                                _context.Add(receipt);
+
+                                _context.SaveChanges();
+
+                                return receipt.receipt_id;
+                            }
+                        }
+                    }
+
+                    else
+                    {
+                        using (var stream = new MemoryStream())
+                        {
+                            formFile.CopyToAsync(stream);
+
+                            Receipt receipt = new Receipt();
+
+                            receipt.receipt_receipt = stream.ToArray();
+
+                            _context.Add(receipt);
+
+                            _context.SaveChanges();
+
+                            return receipt.receipt_id;
+                        }
                     }
                 }
             }
 
             return 0;
         }
-        /*
-         // Create a new PDF document
-            PdfDocument document = new PdfDocument();
-            document.Info.Title = "Created with PDFsharp";
 
-            // Create an empty page
-            PdfPage page = document.AddPage();
-
-            // Get an XGraphics object for drawing
-            XGraphics gfx = XGraphics.FromPdfPage(page);
-
-            // Draw image
-
-            const string imagePath = @"C:\Users\20201107_112630.jpg";
-             XImage xImage = XImage.FromFile(imagePath);
-
-            //FileStream test = new FileStream(path, FileMode.Create);
-            //XImage xImage = XImage.FromStream(test);
-            double height = page.Width / xImage.PixelWidth * xImage.PixelHeight;
-            gfx.DrawImage(xImage, 0, 0, page.Width / 1.1, height / 1.1);
-
-            // Save the document...
-            const string filename = @"C:\PDFDemoTemp\testx.pdf";
-            document.Save(filename);
-         */
     }
 }

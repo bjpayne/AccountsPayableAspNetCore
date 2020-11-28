@@ -10,18 +10,18 @@ DECLARE @outPutPath varchar(50) = 'C:\temp\Extracts'
 DECLARE @Doctable TABLE (id int identity(1,1), [Doc_Num]  varchar(100) , [FileName]  varchar(100), [Doc_Content] varBinary(max) )
  
 INSERT INTO @Doctable([Doc_Num] , [FileName], [Doc_Content])
-Select [receipt_id], 'test.pdf', [receipt_receipt] FROM  [dbo].[receipt]
+Select [receipt_id], 'test', [receipt_receipt] FROM  [dbo].[receipt]
  
 --SELECT * FROM @table
 
-SELECT @i = COUNT(1) FROM @Doctable
+SELECT @i = COUNT(*) FROM @Doctable
  
 WHILE @i >= 1
 BEGIN 
 
 	SELECT 
 	 @data = [Doc_Content],
-	 @fPath = @outPutPath + '\' +[FileName],
+	 @fPath = @outPutPath + '\' + [FileName] + convert(varchar, @i) + '.pdf',
 	 @folderPath = @outPutPath + '\'+ [Doc_Num]
 	FROM @Doctable WHERE id = @i
  

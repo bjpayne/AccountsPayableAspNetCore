@@ -10,7 +10,7 @@ namespace AccountsPayable.Models
     public class Expenses
     {
         public Int32 id { get; set; }
-        public String exp_date { get; set; }
+        public DateTime exp_date { get; set; }
         public String exp_description { get; set; }
         public String exp_fund { get; set; }
         public String exp_org { get; set; }
@@ -20,8 +20,6 @@ namespace AccountsPayable.Models
 
         [ForeignKey("form_id")]
         public int form_id { get; set; }
-        [ForeignKey("receipt_id")]
         public int receipt_id { get; set; }
-
     }
 }

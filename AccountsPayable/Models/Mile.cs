@@ -10,8 +10,8 @@ namespace AccountsPayable.Models
         [Key]
         public int id { get; set; }
 
-        public String mile_date { get; set; }
-        public Int32 mile_miles { get; set; }
+        public DateTime mile_date { get; set; }
+        public Decimal mile_miles { get; set; }
         public String mile_description { get; set; }
         public String mile_fund { get; set; }
         public String mile_org { get; set; }

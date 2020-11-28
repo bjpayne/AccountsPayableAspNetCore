@@ -1,0 +1,121 @@
+@{
+    ViewData["Title"] = "Admin";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <h1>Admin</h1>
+
+        <p>Pending Approval</p>
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Date</th>
+                    <th>Reimbursement Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Form form in ViewData["PendingForms"] as IList<Form>)
+                {
+                    <tr>
+                        <td>
+                            <a asp-controller="Admin" asp-action="Edit">
+                                @form.form_id
+                            </a>
+                        </td>
+                        <td>
+                            @form.employee_first_name
+                        </td>
+                        <td>
+                            @form.employee_last_name
+                        </td>
+                        <td>
+                            @form.form_date.ToString()
+                        </td>
+                        <td>
+                            @form.reimbursement_total
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <p>Approved</p>
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Date</th>
+                    <th>Reimbursement Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Form form in ViewData["ApprovedForms"] as IList<Form>)
+                {
+                    <tr>
+                        <td>
+                            <a asp-controller="Admin" asp-action="Edit">
+                                @form.form_id
+                            </a>
+                        </td>
+                        <td>
+                            @form.employee_first_name
+                        </td>
+                        <td>
+                            @form.employee_last_name
+                        </td>
+                        <td>
+                            @form.form_date.ToString()
+                        </td>
+                        <td>
+                            @form.reimbursement_total
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <p>Denied</p>
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Date</th>
+                    <th>Reimbursement Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Form form in ViewData["DeniedForms"] as IList<Form>)
+                {
+                    <tr>
+                        <td>
+                            <a asp-controller="Admin" asp-action="Edit">
+                                @form.form_id
+                            </a>
+                        </td>
+                        <td>
+                            @form.employee_first_name
+                        </td>
+                        <td>
+                            @form.employee_last_name
+                        </td>
+                        <td>
+                            @form.form_date.ToString()
+                        </td>
+                        <td>
+                            @form.reimbursement_total
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
