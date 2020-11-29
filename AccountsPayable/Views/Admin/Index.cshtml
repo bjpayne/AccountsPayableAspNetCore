@@ -1,9 +1,19 @@
 @{
     ViewData["Title"] = "Admin";
+
+    String flashMessageType = (String)TempData["FlashMessage.Type"];
+    String flashMessageBody = (String)TempData["FlashMessage.Body"];
 }
 
 <div class="row">
     <div class="col-sm-12">
+        @if (!String.IsNullOrWhiteSpace(flashMessageType) && !String.IsNullOrWhiteSpace(flashMessageBody))
+        {
+            <div class="alert alert-@flashMessageType">
+                @flashMessageBody
+            </div>
+        }
+
         <h1>Admin</h1>
 
         <p>Pending Approval</p>
@@ -22,7 +32,7 @@
                 {
                     <tr>
                         <td>
-                            <a asp-controller="Admin" asp-action="Edit">
+                            <a asp-controller="Admin" asp-action="Edit" asp-route-id="@form.form_id">
                                 @form.form_id
                             </a>
                         </td>
@@ -33,7 +43,7 @@
                             @form.employee_last_name
                         </td>
                         <td>
-                            @form.form_date.ToString()
+                            @form.form_date.Date.ToString("yyyy-MM-dd")
                         </td>
                         <td>
                             @form.reimbursement_total
@@ -59,7 +69,7 @@
                 {
                     <tr>
                         <td>
-                            <a asp-controller="Admin" asp-action="Edit">
+                            <a asp-controller="Admin" asp-action="Edit" asp-route-id="@form.form_id">
                                 @form.form_id
                             </a>
                         </td>
@@ -70,7 +80,7 @@
                             @form.employee_last_name
                         </td>
                         <td>
-                            @form.form_date.ToString()
+                            @form.form_date.Date.ToString("yyyy-MM-dd")
                         </td>
                         <td>
                             @form.reimbursement_total
@@ -96,7 +106,7 @@
                 {
                     <tr>
                         <td>
-                            <a asp-controller="Admin" asp-action="Edit">
+                            <a asp-controller="Admin" asp-action="Edit" asp-route-id="@form.form_id">
                                 @form.form_id
                             </a>
                         </td>
@@ -107,7 +117,7 @@
                             @form.employee_last_name
                         </td>
                         <td>
-                            @form.form_date.ToString()
+                            @form.form_date.Date.ToString("yyyy-MM-dd")
                         </td>
                         <td>
                             @form.reimbursement_total

@@ -47,7 +47,7 @@ namespace AccountsPayable.Controllers
         [Route("/HomeController/Create", Name = "Create")]
         public async Task<IActionResult> Create()
         {
-            Microsoft.AspNetCore.Http.IFormCollection request = Request.Form;
+            IFormCollection request = Request.Form;
 
             Form form = new Form();
 
@@ -94,6 +94,9 @@ namespace AccountsPayable.Controllers
             StoreExpenses(form.form_id, receiptId);
 
             _context.SaveChanges();
+
+            TempData["FlashMessage.Type"] = "success";
+            TempData["FlashMessage.Body"] = "Expense form submitted";
 
             return RedirectToAction(nameof(Index));
         }
@@ -244,10 +247,6 @@ namespace AccountsPayable.Controllers
                         expenses.receipt_id = receiptId;
 
                         _context.Add(expenses);
-                    }
-                    else
-                    {
-                        // Validation for missing receipt
                     }
 
                     i++;

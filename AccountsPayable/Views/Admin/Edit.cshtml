@@ -1,5 +1,13 @@
 ﻿@{
     ViewData["Title"] = "Edit";
+    Form form = (Form)ViewData["form"];
+    Receipt receipt = (Receipt)ViewData["receipt"];
+
+    Decimal totalMileage = 0;
+    Decimal totalExpenses = 0;
+    Decimal totalReimbursement = 0;
+
+    Boolean taxable;
 }
 
 <div class="row">
@@ -7,40 +15,237 @@
         <h1>Admin</h1>
 
         <p>Edit</p>
-        <table class="table table-striped table-sm">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Date</th>
-                    <th>Reimbursement Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (Form form in ViewData["PendingForms"] as IList<Form>)
-                {
-                <tr>
-                    <td>
-                        <a asp-controller="Admin" asp-action="Edit">
-                            @form.form_id
-                        </a>
-                    </td>
-                    <td>
-                        @form.employee_first_name
-                    </td>
-                    <td>
-                        @form.employee_last_name
-                    </td>
-                    <td>
-                        @form.form_date.ToString()
-                    </td>
-                    <td>
-                        @form.reimbursement_total
-                    </td>
-                </tr>
-                }
-            </tbody>
-        </table>
+
+        <form asp-action="Update" asp-controller="Admin" asp-route-id="@form.form_id" method="post" enctype="multipart/form-data" id="expense-form">
+
+            <div class="form-group">
+                <label for="employee-id">
+                    Employee ID
+                </label>
+                <input type="text" id="employee-id" class="form-control" value="@form.employee_id" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="first-name">
+                    First Name
+                </label>
+                <input type="text" id="first-name" class="form-control" value="@form.employee_first_name" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="last-name">
+                    Last Name
+                </label>
+                <input type="text" id="last-name" name="last_name" class="form-control" value="@form.employee_last_name" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="date">
+                    Today's Date (Y-m-d)
+                </label>
+                <input type="text" name="date" id="date" value="@form.form_date.Date.ToString("yyyy-MM-dd")"
+                       class="form-control" data-mask="0000-00-00" placeholder="____-__-__" readonly
+                       minlength="10">
+            </div>
+
+            <div class="form-group">
+                <label for="department">
+                    Department
+                </label>
+
+                <select name="department" id="department" class="form-control" disabled>
+                    <option value="" disabled>-- Please Select One --</option>
+                    @foreach (var department in ViewData["Departments"] as IList<Department>)
+                    {
+                        <option value="@department.department_id" selected="@(form.department_id == department.department_id)">
+                            @department.department_name
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="campus">Home Campus</label>
+
+                <input type="text" class="form-control" name="home_campus" value="@form.form_campus" readonly>
+            </div>
+
+            <table id="mileage-reimbursements-table" class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th colspan="2">Mileage Reimbursement:</th>
+                        <th colspan="6">&nbsp;</th>
+                    </tr>
+                    <tr>
+                        <th>Date (Y-m-d)</th>
+                        <th>Destination (from-to-return)</th>
+                        <th>Miles</th>
+                        <th>Purpose of Travel</th>
+                        <th>Fund</th>
+                        <th>Org</th>
+                        <th>Account</th>
+                        <th>Amount</th>
+                        <th>Taxable?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Mile mile in ViewData["mileages"] as IList<Mile>)
+                    {
+                        <tr>
+                            <td>
+                                <input type="text" class="form-control date-masked-input input-sm" value="@mile.mile_date.Date.ToString("yyyy-MM-dd")" name="mileage_reimbursements[0][date]"
+                                       placeholder="___-__-__" data-mask="0000-00-00" readonly>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm" value="@mile.mile_description" name="mileage_reimbursements[@mile.id][destination]" readonly>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm" value="@mile.mile_miles" name="mileage_reimbursements[@mile.id][miles]" readonly>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm" value="@mile.mile_purpose" name="mileage_reimbursements[@mile.id][purpose]" readonly>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm" value="@mile.mile_fund" name="mileage_reimbursements[@mile.id][fund]" minlength=3 maxlength=3 readonly>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm" value="@mile.mile_org" name="mileage_reimbursements[@mile.id][organization]" minlength=3 maxlength=3 readonly>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm" value="@mile.mile_account" name="mileage_reimbursements[@mile.id][account]" minlength=5 maxlength=5 readonly>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm mileage-reimbursement-amount" value="@mile.mile_amount" name="mileage_reimbursements[@mile.id][amount]" readonly>
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="checkbox" class="alert " name="mileage_reimbursements[@mile.id][mile_tax]" @(mile.mile_tax != null && mile.mile_tax == "yes" ? "checked" : "")>
+                                </label>
+                            </td>
+                        </tr>
+                        {
+                            Decimal mileageAmount = 0;
+
+                            if (Decimal.TryParse(mile.mile_amount, out mileageAmount))
+                            {
+                                totalMileage = totalMileage + mileageAmount;
+                            }
+                        }
+                    }
+                    <tr>
+                        <td colspan="8" class="text-right">Total Mileage:</td>
+                        <td>
+                            <p class="form-control-static text-right" id="total-mileage">$@totalMileage</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table id="other-expenses-table" class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th colspan="2">Other Expenses:</th>
+                        <th colspan="5">&nbsp;</th>
+                    </tr>
+                    <tr>
+                        <th>Date (Y-m-d)</th>
+                        <th>Description</th>
+                        <th>Fund</th>
+                        <th>ORG</th>
+                        <th>Account</th>
+                        <th>Amount</th>
+                        <th>Taxable?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Expenses expenses in ViewData["expenses"] as IList<Expenses>)
+                    {
+                    <tr>
+                        <td>
+                            <input type="text" class="form-control date-masked-input input-sm" value="@expenses.exp_date.Date.ToString("yyyy-MM-dd")" 
+                                   name="other_expenses[@expenses.id][exp_date]" data-mask="0000-00-00" placeholder="___-__-__" readonly
+                             >
+                        </td>
+                        <td>
+                            <input type="text" class="form-control input-sm" value="@expenses.exp_description" name="other_expenses[@expenses.id][exp_description]" readonly>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control input-sm" value="@expenses.exp_fund" name="other_expenses[@expenses.id][exp_fund]" minlength=3 maxlength=3 readonly>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control input-sm" value="@expenses.exp_org" name="other_expenses[@expenses.id][exp_org]" minlength=3 maxlength=3 readonly>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control input-sm" value="@expenses.exp_account" name="other_expenses[@expenses.id][exp_account]" minlength=5 maxlength=5 readonly>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control input-sm other-expense-amount" value="@expenses.exp_amount" name="other_expenses[@expenses.id][exp_amount]" readonly>
+                        </td>
+                        <td>
+                            <label>
+                                <input type="checkbox" class="alert " name="other_expenses[@expenses.id][exp_tax]" @(expenses.exp_tax != null && expenses.exp_tax == "yes" ? "checked" : "")>
+                            </label>
+                        </td>
+                    </tr>
+                        {
+                            Decimal expensesAmount = 0;
+
+                            if (Decimal.TryParse(expenses.exp_amount, out expensesAmount))
+                            {
+                                totalExpenses = totalExpenses + expensesAmount;
+                            }
+                        }
+                    }
+
+                    <tr>
+                        <td colspan="6" class="text-right">Total Expenses:</td>
+                        <td>
+                            <p class="form-control-static text-right" id="total-expenses">$@totalExpenses</p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="6">Total Reimbursement:</td>
+                        <td>
+                            @{ totalReimbursement = totalMileage + totalExpenses;}
+                            <p class="form-control-static text-right" id="total-reimbursement">$@totalReimbursement</p>
+                        </td>
+                    
+                    </tr>
+                </tbody>
+            </table>
+
+            @if (receipt != null)
+            {
+                <div class="form-group">
+                    <label>Reimbursement Receipt:</label>
+
+                    <a asp-action="Download" asp-controller="Admin" asp-route-id="@receipt.receipt_id">
+                        Download
+                    </a>
+                </div>
+
+            }
+
+            <div class="form-group alert alert-warning">
+                <label>
+                    Approved
+
+                    <input type="radio" name="form_status" value="Approved" @(form.form_status == "Approved" ? "checked" : "")>
+                </label>
+
+                <label>
+                    Denied
+
+                    <input type="radio" name="form_status" value="Denied" @(form.form_status == "Denied" ? "checked" : "")>
+                </label>
+            </div>
+
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+        </form>
+
     </div>
 </div>

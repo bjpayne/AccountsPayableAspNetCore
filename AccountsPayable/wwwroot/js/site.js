@@ -29,7 +29,19 @@ $(function () {
             input = $(input);
 
             input.mask('0000-00-00');
-        })
+        });
+
+        let table = button.parents('table');
+
+        table.find('tr').each(function (rowIndex, tableRow) {
+            tableRow = $(tableRow);
+
+            tableRow.find('input').each(function (inputIndex, input) {
+                input = $(input);
+
+                input.prop('name', input.prop('name').replace(/\d/, rowIndex - 2));
+            });
+        });
     }
 
     function calculateReimbursement() {
